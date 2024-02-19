@@ -96,6 +96,12 @@ const perguntas = [
 
 const quiz = document.querySelector("#quiz");
 const template = document.querySelector("template");
+const mostrarTotal = document.querySelector("#acertos span");
+
+const corretas = new Set();
+const totalDePerguntas = perguntas.length;
+
+mostrarTotal.textContent = corretas.size + " de " + totalDePerguntas;
 
 // loop ou laço de repetição
 for (const item of perguntas) {
@@ -107,6 +113,22 @@ for (const item of perguntas) {
     const dt = quizItem.querySelector("dl dt").cloneNode(true);
 
     dt.querySelector("span").textContent = resposta;
+    dt.querySelector("input").setAttribute(
+      "name",
+      "pergunta-" + perguntas.indexOf(item)
+    );
+    dt.querySelector("input").value = item.respostas.indexOf(resposta);
+    dt.querySelector("input").onchange = (event) => {
+      const estaCorreta = event.target.value == item.correta;
+
+      corretas.delete(item);
+
+      if (estaCorreta) {
+        corretas.add(item);
+      }
+
+      mostrarTotal.textContent = corretas.size + " de " + totalDePerguntas;
+    };
 
     quizItem.querySelector("dl").appendChild(dt);
   }
